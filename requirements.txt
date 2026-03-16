@@ -1,0 +1,7 @@
+networkx==3.6.1
+numpy==2.4.3
+plotly==6.6.0
+pytest==9.0.2
+pytest-timeout==2.4.0
+PyYAML==6.0.3
+tqdm==4.67.3
