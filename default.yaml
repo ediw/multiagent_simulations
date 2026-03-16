@@ -1,0 +1,59 @@
+# ============================================================
+# Simulation Configuration
+# ============================================================
+# All fields map 1:1 to SimulationConfig dataclass.
+# Override only what you need — omitted keys use dataclass defaults.
+
+seed: 42
+duration: 480.0            # minutes (8 h)
+arrival_rate_per_hour: 28.0
+
+# Rework / quality gates
+max_rework: 2
+split_threshold: 1.9
+merge_min_quality: 0.72
+
+# Human escalation
+human_resolution_time_mean: 25.0
+
+# Burst period (set to null to disable)
+burst_start: 180.0
+burst_end: 240.0
+burst_multiplier: 1.8
+
+# Targeted agent failure (set targeted_failure_time to null to disable)
+targeted_failure_time: 300.0
+targeted_failure_agents:
+  - VAL-1
+  - VAL-2
+failure_duration: 45.0
+
+# Fleet configuration (agent definitions + topology)
+fleet_config: fleet.yaml     # set to null to use hardcoded defaults
+
+# Intra-group connectivity (fallback when fleet_config is null)
+intra_group_density: 0.20    # fraction of possible intra-group edges (0.0–1.0)
+
+# SLA proactive monitoring
+sla_check_interval: 10.0              # minutes between SLA risk checks
+sla_risk_threshold_minutes: 15.0      # flag case as at-risk when < this many minutes left
+
+# Queue timeout (stale task requeue)
+queue_timeout: 20.0                   # minutes before a queued task is considered stale
+queue_timeout_check_interval: 5.0     # minutes between timeout sweeps
+
+# Trust learning rates
+trust_reward: 0.10          # (legacy) not used with EMA
+trust_penalty: -0.08        # (legacy) not used with EMA
+trust_lambda: 0.15          # EMA forgetting factor: trust = (1-λ)*trust + λ*reward
+trust_decay: 0.9            # warm-start decay factor (1.0=full carry, 0.5=aggressive decay)
+
+# Timeseries sampling interval (minutes)
+timeseries_sample_interval: 2.0
+
+# Monte Carlo
+monte_carlo_runs: 5
+warm_monte_carlo_runs: 0
+
+# Experience state persistence (set to null to disable)
+experience_state_path: experience_state.json   # save/load warm-start trust & memory

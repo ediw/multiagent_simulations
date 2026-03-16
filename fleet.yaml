@@ -1,0 +1,116 @@
+# ============================================================
+# Fleet Configuration — agents, topology, defaults
+# ============================================================
+# Referenced from config.yaml via  fleet_config: fleet.yaml
+#
+# Value format:
+#   scalar        → used as-is           (e.g.  0.99)
+#   [min, max]    → rnd.uniform(min,max) (e.g.  [0.60, 0.85])
+
+# ── Level 3: shared random ranges for all agents ────────────
+agent_defaults:
+  base_accuracy: [0.75, 0.93]
+  base_confidence: [0.55, 0.85]
+  cost_per_action: [0.8, 2.6]
+  split_propensity: [0.15, 0.75]
+  escalation_threshold: [0.18, 0.35]
+  rework_threshold: [0.50, 0.68]
+  fatigue_increase: 0.02
+  fatigue_recovery: 0.01
+
+# ── Level 1: agent group definitions ────────────────────────
+agents:
+  - prefix: INT
+    type: intake
+    count: 6
+    queue_capacity: 10
+    avg_service_time: [2.0, 4.0]
+    skills:
+      mail_understanding: [0.60, 0.85]
+      validation: [0.25, 0.45]
+
+  - prefix: CTX
+    type: context
+    count: 8
+    queue_capacity: 8
+    avg_service_time: [3.0, 6.0]
+    skills:
+      mail_understanding: [0.70, 0.95]
+      merge_resolution: [0.30, 0.55]
+
+  - prefix: EXT
+    type: extraction
+    count: 8
+    queue_capacity: 8
+    avg_service_time: [4.0, 8.0]
+    skills:
+      attachment_extraction: [0.65, 0.95]
+      validation: [0.20, 0.40]
+
+  - prefix: VAL
+    type: validation
+    count: 6
+    queue_capacity: 8
+    avg_service_time: [2.5, 5.0]
+    skills:
+      validation: [0.70, 0.95]
+      merge_resolution: [0.25, 0.45]
+
+  - prefix: RES
+    type: resolver
+    count: 4
+    queue_capacity: 6
+    avg_service_time: [3.0, 6.0]
+    skills:
+      merge_resolution: [0.72, 0.95]
+      validation: [0.40, 0.60]
+
+  - prefix: HUM
+    type: human
+    count: 2
+    queue_capacity: 20
+    avg_service_time: [10.0, 15.0]
+    skills:
+      merge_resolution: 0.99
+      validation: 0.99
+      mail_understanding: 0.99
+      attachment_extraction: 0.99
+
+  - prefix: MEM
+    type: memory
+    count: 2
+    queue_capacity: 12
+    avg_service_time: [1.5, 3.0]
+    skills:
+      case_memory: [0.80, 0.95]
+      pattern_lookup: [0.75, 0.90]
+
+# ── Per-agent overrides (applied after group creation) ──────
+# Uncomment and edit to override specific agents:
+# overrides:
+#   HUM-1:
+#     avg_service_time: 12.0
+#     skills:
+#       merge_resolution: 0.95
+#   INT-3:
+#     queue_capacity: 15
+#     fatigue_increase: 0.03
+
+# ── Level 2: network topology ──────────────────────────────
+topology:
+  intra_group_density: 0.20
+  intra_group_cost: [0.6, 1.1]
+  intra_group_latency: [0.1, 0.4]
+
+  inter_group:
+    - { src: intake,     dst: context,    density: 0.65, cost: [0.7, 1.2], latency: [0.2, 0.5] }
+    - { src: intake,     dst: extraction, density: 0.45, cost: [0.9, 1.4], latency: [0.3, 0.6] }
+    - { src: context,    dst: extraction, density: 0.55, cost: [0.7, 1.2], latency: [0.2, 0.5] }
+    - { src: context,    dst: validation, density: 0.50, cost: [0.8, 1.3], latency: [0.2, 0.5] }
+    - { src: extraction, dst: validation, density: 0.70, cost: [0.6, 1.0], latency: [0.2, 0.4] }
+    - { src: validation, dst: resolver,   density: 0.75, cost: [0.6, 1.0], latency: [0.2, 0.4] }
+    - { src: resolver,   dst: human,      density: 0.90, cost: [0.5, 0.9], latency: [0.1, 0.3] }
+    - { src: intake,     dst: resolver,   density: 0.20, cost: [1.0, 1.5], latency: [0.3, 0.6] }
+    - { src: intake,     dst: memory,     density: 0.70, cost: [0.4, 0.8], latency: [0.1, 0.3] }
+    - { src: context,    dst: memory,     density: 0.70, cost: [0.4, 0.8], latency: [0.1, 0.3] }
+    - { src: memory,     dst: resolver,   density: 0.50, cost: [0.5, 0.9], latency: [0.1, 0.3] }
