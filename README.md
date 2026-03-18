@@ -2,6 +2,8 @@
 
 Symulacja bada, jak sieć agentów organizuje przetwarzanie informacji w procesie biznesowym na przykładzie klasyfikacji wiadomości email i ekstrakcji danych z załączników w ciągu jednego dnia operacyjnego.
 
+![Sieć agentów](docs/images/network.png "Sieć agentów")
+
 Celem projektu jest zrozumienie, kiedy lokalnie decyzje agentów prowadzą do **globalnie dobrego porządku w procesie**, albo kiedy tworzą:
 
 - centra (huby),
@@ -10,7 +12,9 @@ Celem projektu jest zrozumienie, kiedy lokalnie decyzje agentów prowadzą do **
 - nadmierną eskalację do człowieka,
 - oraz lokalnie skuteczne, ale nieoptymalne globalnie ścieżki komunikacji.
 
-Na końcu dokumentu zamieszczony jest słownik pojęć.
+![Wykorzystanie agentów](docs/images/agent-utilization.png "Wykorzystanie agentów")
+
+*Na końcu dokumentu zamieszczony jest słownik pojęć.*
 
 ---
 
@@ -47,11 +51,9 @@ Model reprezentuje uproszczony, ale biznesowo realistyczny proces:
    - a trudne przypadki eskaluje do człowieka.
 4. W trakcie działania powstają lokalne wzorce współpracy, przeciążenia i dominujące ścieżki routingu.
 
----
+![Przepływ informacji](docs/images/routing.png "Przepływ informacji")
 
-## Co projekt symulacja
-
-Najważniejsze pytania badawcze:
+### Najważniejsze pytania badawcze:
 
 - Czy sieć agentów samoorganizuje się w sposób korzystny dla biznesu?
 - Czy trust poprawia wynik procesu, czy tylko utrwala lokalne przyzwyczajenia?
@@ -77,6 +79,8 @@ Przykłady:
 - topologia i lokalne polityki tworzą trwałe bottlenecks,
 - system utrzymuje jakość głównie dzięki człowiekowi.
 
+![Ruch w sieci](docs/images/network-traffic.png "Ruch w sieci - 10 najbardziej obciążonych krawędzi")
+
 ---
 
 ## Dlaczego pojawia się tu ANT
@@ -100,6 +104,8 @@ Dzięki temu projekt można wykorzystać nie tylko jako symulację przepływu (w
 ---
 
 ## Dlaczego pojawia się tu „termodynamika”
+
+![Termodynamika procesu](docs/images/thermodynamics.png "Termodynamika procesu")
 
 Projekt używa wskaźników inspirowanych fizyką statystyczną:
 
@@ -137,6 +143,8 @@ W praktyce oznacza to, że ten sam scenariusz uruchamiany jest wielokrotnie przy
 - kolejności zdarzeń,
 - lokalnych interakcji,
 - oraz, w zależności od scenariusza, stanu pamięci relacyjnej.
+
+![Monte Carlo](docs/images/monte-carlo.png "Monte Carlo")
 
 Monte Carlo pełni w projekcie trzy funkcje:
 
