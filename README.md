@@ -1,5 +1,19 @@
 # Symulacja sieci agentów *(Multi-Agent Simulation)*
 
+Symulacja służy do badania, jak sieć agentów organizuje przetwarzanie informacji w procesie biznesowym. Jako przykład wybrałem proces klasyfikacji wiadomości email i ekstrakcji danych z załączników na przestrzeni jednego dnia operacyjnego.
+
+![Sieć agentów](docs/images/network.png "Sieć agentów")
+
+Celem projektu jest zrozumienie, kiedy lokalne decyzje agentów prowadzą do **globalnego porządku w procesie**, albo kiedy tworzą:
+
+- centra (huby),
+- przeciążenia,
+- ukryte wąskie gardła (bottlenecks),
+- nadmierną eskalację do człowieka,
+- oraz lokalnie skuteczne, ale nieoptymalne globalnie ścieżki komunikacji.
+
+*Na końcu dokumentu zamieszczony jest słownik pojęć.*
+
 ## Spis treści
 
 - [Symulacja sieci agentów *(Multi-Agent Simulation)*](#symulacja-sieci-agentów-multi-agent-simulation)
@@ -28,20 +42,6 @@
     - [Agent-Based Simulation / Process Simulation](#agent-based-simulation--process-simulation)
     - [ANT](#ant)
   - [Główna teza projektu](#główna-teza-projektu)
-
-Symulacja służy do badania, jak sieć agentów organizuje przetwarzanie informacji w procesie biznesowym. Jako przykład wybrałem proces klasyfikacji wiadomości email i ekstrakcji danych z załączników na przestrzeni jednego dnia operacyjnego.
-
-![Sieć agentów](docs/images/network.png "Sieć agentów")
-
-Celem projektu jest zrozumienie, kiedy lokalne decyzje agentów prowadzą do **globalnego porządku w procesie**, albo kiedy tworzą:
-
-- centra (huby),
-- przeciążenia,
-- ukryte wąskie gardła (bottlenecks),
-- nadmierną eskalację do człowieka,
-- oraz lokalnie skuteczne, ale nieoptymalne globalnie ścieżki komunikacji.
-
-*Na końcu dokumentu zamieszczony jest słownik pojęć.*
 
 ---
 
