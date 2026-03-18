@@ -1,18 +1,45 @@
-# Multi-Agent Simulation
+# Symulacja sieci agentów *(Multi-Agent Simulation)*
 
-Symulacja bada, jak sieć agentów organizuje przetwarzanie informacji w procesie biznesowym na przykładzie klasyfikacji wiadomości email i ekstrakcji danych z załączników w ciągu jednego dnia operacyjnego.
+## Spis treści
+
+- [Symulacja sieci agentów *(Multi-Agent Simulation)*](#symulacja-sieci-agentów-multi-agent-simulation)
+  - [Spis treści](#spis-treści)
+  - [Główna idea](#główna-idea)
+  - [Jaki problem jest symulowany](#jaki-problem-jest-symulowany)
+    - [Najważniejsze pytania badawcze:](#najważniejsze-pytania-badawcze)
+  - [Co oznacza emergencja w tym projekcie](#co-oznacza-emergencja-w-tym-projekcie)
+  - [Dlaczego pojawia się ANT](#dlaczego-pojawia-się-ant)
+  - [Dlaczego pojawia się „termodynamika”](#dlaczego-pojawia-się-termodynamika)
+  - [Dlaczego pojawia się tu Monte Carlo (MC)](#dlaczego-pojawia-się-tu-monte-carlo-mc)
+    - [1. Ocena stabilności wyników](#1-ocena-stabilności-wyników)
+    - [2. Porównanie scenariuszy](#2-porównanie-scenariuszy)
+    - [3. Szersza perspektywa na „termodynamikę” systemu](#3-szersza-perspektywa-na-termodynamikę-systemu)
+    - [Single run vs Monte Carlo](#single-run-vs-monte-carlo)
+  - [Co nie jest celem projektu](#co-nie-jest-celem-projektu)
+  - [Najważniejsze wyniki, których szukamy](#najważniejsze-wyniki-których-szukamy)
+  - [Instalacja](#instalacja)
+  - [Uruchomienie symulacji](#uruchomienie-symulacji)
+    - [Pełna symulacja z wizualizacjami](#pełna-symulacja-z-wizualizacjami)
+    - [Symulacja bez wizualizacji](#symulacja-bez-wizualizacji)
+    - [Konfiguracja](#konfiguracja)
+  - [Słownik skrótów](#słownik-skrótów)
+  - [Literatura](#literatura)
+    - [Multi-Agent Systems](#multi-agent-systems)
+    - [Agent-Based Simulation / Process Simulation](#agent-based-simulation--process-simulation)
+    - [ANT](#ant)
+  - [Główna teza projektu](#główna-teza-projektu)
+
+Symulacja służy do badania, jak sieć agentów organizuje przetwarzanie informacji w procesie biznesowym. Jako przykład wybrałem proces klasyfikacji wiadomości email i ekstrakcji danych z załączników na przestrzeni jednego dnia operacyjnego.
 
 ![Sieć agentów](docs/images/network.png "Sieć agentów")
 
-Celem projektu jest zrozumienie, kiedy lokalnie decyzje agentów prowadzą do **globalnie dobrego porządku w procesie**, albo kiedy tworzą:
+Celem projektu jest zrozumienie, kiedy lokalne decyzje agentów prowadzą do **globalnego porządku w procesie**, albo kiedy tworzą:
 
 - centra (huby),
 - przeciążenia,
 - ukryte wąskie gardła (bottlenecks),
 - nadmierną eskalację do człowieka,
 - oraz lokalnie skuteczne, ale nieoptymalne globalnie ścieżki komunikacji.
-
-![Wykorzystanie agentów](docs/images/agent-utilization.png "Wykorzystanie agentów")
 
 *Na końcu dokumentu zamieszczony jest słownik pojęć.*
 
@@ -37,35 +64,35 @@ Projekt zakłada, że:
 
 ## Jaki problem jest symulowany
 
-Model reprezentuje uproszczony, ale biznesowo realistyczny proces:
+Model reprezentuje uproszczony, lecz realistyczny biznesowy proces:
 
-1. Do systemu wpływa wiadomość e-mail.
-2. Wiadomość może zawierać załączniki i dane niepełne lub niejednoznaczne.
+1. Wiadomość e-mail wpływa do systemu.
+2. Wiadomość może zawierać załączniki, a dane mogą być niepełne lub niejednoznaczne.
 3. Sieć agentów:
    - interpretuje kontekst,
    - klasyfikuje sprawę,
-   - rozbija ją na podzadania,
+   - dzieli ją na podzadania,
    - ekstrahuje dane,
    - sprawdza wyniki,
    - scala odpowiedzi,
-   - a trudne przypadki eskaluje do człowieka.
-4. W trakcie działania powstają lokalne wzorce współpracy, przeciążenia i dominujące ścieżki routingu.
+   - trudne przypadki eskaluje do człowieka.
+4. W trakcie działania powstają lokalne wzorce współpracy, przeciążenia i dominujące ścieżki przepływu (routing).
 
 ![Przepływ informacji](docs/images/routing.png "Przepływ informacji")
 
 ### Najważniejsze pytania badawcze:
 
 - Czy sieć agentów samoorganizuje się w sposób korzystny dla biznesu?
-- Czy trust poprawia wynik procesu, czy tylko utrwala lokalne przyzwyczajenia?
-- Czy `warm start` prowadzi do lepszego porządku, czy do większej inercji systemu?
+- Czy trust (lokalna pamięć) poprawia wynik procesu, czy tylko utrwala lokalne przyzwyczajenia?
+- Czy `warm start` skutkuje lepszym porządkiem, czy też prowadzi do większej inercji systemu?
 - Kiedy wysoka jakość końcowa wynika z autonomii agentów, a kiedy głównie z eskalacji do człowieka?
-- Czy można wykrywać przeciążenie systemu wcześniej niż przez same KPI?
+- Czy można wykrywać przeciążenie systemu wcześniej niż poprzez same KPI?
 
 ---
 
 ## Co oznacza emergencja w tym projekcie
 
-Emergencja oznacza tutaj, że wzorce pracy systemu:
+Emergencja w niniejszej symulacji oznacza, że wzorce pracy sieci:
 
 - nie są zapisane w jednej regule,
 - nie są planowane centralnie,
@@ -74,20 +101,20 @@ Emergencja oznacza tutaj, że wzorce pracy systemu:
 ale powstają z wielu lokalnych interakcji.
 
 Przykłady:
-- kilka agentów przejmuje większość ruchu mimo symetrycznych parametrów,
+- kilku agentów przejmuje większość ruchu mimo symetrycznych parametrów,
 - trust uczy się relacji, ale nie poprawia globalnych KPI,
-- topologia i lokalne polityki tworzą trwałe bottlenecks,
+- topologia i lokalne polityki tworzą trwałe wąskie gardła (bottlenecks),
 - system utrzymuje jakość głównie dzięki człowiekowi.
 
 ![Ruch w sieci](docs/images/network-traffic.png "Ruch w sieci - 10 najbardziej obciążonych krawędzi")
 
 ---
 
-## Dlaczego pojawia się tu ANT
+## Dlaczego pojawia się ANT
 
-Projekt jest inspirowany Actor-Network Theory (ANT), ale nie jest jej formalną implementacją.
+Projekt jest inspirowany Actor-Network Theory (ANT), ale nie jest formalną implementacją tej teorii.
 
-ANT jest tu używana jako **rama interpretacyjna**: sprawczość w systemie nie należy wyłącznie do agentów software’owych, ale powstaje w relacjach między:
+ANT jest tu używana jako **rama interpretacyjna** - sprawczość w systemie nie należy wyłącznie do agentów, lecz powstaje w relacjach między:
 
 - agentami,
 - zadaniami,
@@ -103,9 +130,7 @@ Dzięki temu projekt można wykorzystać nie tylko jako symulację przepływu (w
 
 ---
 
-## Dlaczego pojawia się tu „termodynamika”
-
-![Termodynamika procesu](docs/images/thermodynamics.png "Termodynamika procesu")
+## Dlaczego pojawia się „termodynamika”
 
 Projekt używa wskaźników inspirowanych fizyką statystyczną:
 
@@ -114,14 +139,16 @@ Projekt używa wskaźników inspirowanych fizyką statystyczną:
 - `S_eff` — effective entropy (entropia),
 - `F_eff` — effective free energy (energia swobodna).
 
-Nie są to ścisłe wielkości fizyczne. To **operacyjne analogie** do monitoringu systemu:
+![Termodynamika procesu](docs/images/thermodynamics.png "Termodynamika procesu")
+
+Nie są to ścisłe wielkości fizycznem ale **operacyjne analogie** w celu monitoringu systemu:
 
 - `T_eff` — temperatura odzwierciedla poziom fluktuacji i niepewności,
-- `U_eff` — energia wewnętrzna to napięcie operacyjne związane z kolejkami, reworkiem i SLA risk,
-- `S_eff` — entropia jako miara nieuporządkowania pozwala oceniać rozproszenie tras i obciążenia,
+- `U_eff` — energia wewnętrzna to napięcie operacyjne związane z kolejkami, błędami i ryzykiem związanym z SLA,
+- `S_eff` — entropia jako miara nieuporządkowania pozwala oceniać rozproszenie ruchu po ścieżkach i obciążenie,
 - `F_eff` — energia swobodna to uproszczony potencjał organizacyjny układu.
 
-Ich celem jest wykrywanie momentów, w których system:
+Celem tych wielkości jest wykrywanie momentów, w których system:
 - stabilizuje się,
 - doświadcza przeciążenia,
 - tworzy huby,
@@ -134,11 +161,11 @@ Ich celem jest wykrywanie momentów, w których system:
 Pojedynczy przebieg symulacji pokazuje, **jak może wyglądać jeden dzień operacyjny**, ale nie wystarcza to do oceny, czy obserwowany wzorzec jest:
 
 - stabilną cechą architektury,
-- czy tylko efektem konkretnej trajektorii zdarzeń.
+- czy też tylko efektem konkretnej trajektorii zdarzeń.
 
 Dlatego projekt wykorzystuje **Monte Carlo**.
 
-W praktyce oznacza to, że ten sam scenariusz uruchamiany jest wielokrotnie przy różnych realizacjach losowych:
+W praktyce oznacza to, że ten sam scenariusz uruchamiany jest wielokrotnie przy różnych losowych realizacjach:
 - napływu spraw,
 - kolejności zdarzeń,
 - lokalnych interakcji,
@@ -149,9 +176,7 @@ W praktyce oznacza to, że ten sam scenariusz uruchamiany jest wielokrotnie przy
 Monte Carlo pełni w projekcie trzy funkcje:
 
 ### 1. Ocena stabilności wyników
-MC pozwala odróżnić:
-- pojedynczy incydent,
-- od trwałej własności systemu.
+MC pozwala odróżnić pojedynczy incydent od trwałej własności systemu.
 
 Dzięki temu można sprawdzić, czy np.:
 - huby pojawiają się regularnie,
@@ -159,14 +184,14 @@ Dzięki temu można sprawdzić, czy np.:
 - wzrost `U_eff` lub zbliżanie się `F_eff` do zera jest powtarzalne.
 
 ### 2. Porównanie scenariuszy
-MC umożliwia porównywanie wariantów:
+MC umożliwia porównywanie wariantów przy tych samych parametrach początkowych:
 - topologii sieci agentów,
 - polityk routingu,
 - reward dla trust (mechanizm aktualizacji zaufania między agentami po zakończeniu podzadania),
 - `cold start` vs `warm start`,
-- burstów (szczyt operacyjny), awarii i bottlenecków (wąskich gardeł).
+- szczyt operacyjny (bursts), awarii i wąskich gardeł (bottlenecków).
 
-Zamiast jednego przebiegu porównujemy wtedy:
+Zamiast jednego przebiegu porównujemy:
 - średnią trajektorię,
 - medianę,
 - percentyle,
@@ -179,19 +204,18 @@ Wskaźniki takie jak:
 - `S_eff`,
 - `F_eff`
 
-mogą być analizowane nie tylko dla jednego uruchomienia, ale także jako **trajektorie uśrednione punkt po punkcie w czasie** po wielu przebiegach MC.
+mogą być analizowane nie tylko dla jednego uruchomienia, ale także jako **uśrednione trajektorie po czasie** dzięki wielu przebiegom MC.
 
-To pozwala odpowiedzieć na pytania:
+Pozwala to odpowiedzieć na pytania:
 - jak wygląda typowy dzień operacyjny,
 - kiedy system zwykle wchodzi w strefę napięcia,
 - czy `warm start` stabilizuje system,
 - czy raczej utrwala lokalnie skuteczne, ale globalnie kosztowne ścieżki.
 
 ### Single run vs Monte Carlo
-W projekcie obie perspektywy są potrzebne:
 
-- **single run** — pokazuje mechanikę konkretnego dnia operacyjnego,
-- **Monte Carlo** — pokazuje, czy dany wzorzec jest typowy, trwały i statystycznie wiarygodny.
+**Single run** — pokazuje mechanikę konkretnego dnia operacyjnego.
+**Monte Carlo** — pokazuje, czy dany wzorzec jest typowy, trwały i statystycznie wiarygodny.
 
 Dlatego wyniki należy czytać równolegle:
 - jako przebiegi jednego dnia,
@@ -222,6 +246,69 @@ Projekt pozwala badać, czy system:
 - tworzy specjalizację zamiast hubów,
 - uczy się relacji zgodnych z globalnym celem procesu,
 - pozostaje odporny na bursty (szczyty operacyjne), awarie i degradację warstw wykonawczych.
+
+---
+
+## Instalacja
+
+```bash
+python -m venv .venv
+```
+
+Aktywacja środowiska:
+
+```bash
+# Linux / macOS
+source .venv/bin/activate
+
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+```
+
+Instalacja zależności:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Uruchomienie symulacji
+
+### Pełna symulacja z wizualizacjami
+
+Uruchamia single run, cold-start MC i warm-start MC, a następnie generuje interaktywne wykresy HTML w katalogu `output/`:
+
+```bash
+python visualization.py                    # domyślna konfiguracja (config.yaml)
+python visualization.py S1_symmetric_baseline.yaml   # własny scenariusz
+```
+
+Wyniki trafiają do `output/<nazwa_scenariusza>/`.
+
+### Symulacja bez wizualizacji
+
+Uruchamia single run + Monte Carlo i wypisuje wyniki w terminalu:
+
+```bash
+python main.py                             # domyślna konfiguracja
+python main.py S1_symmetric_baseline.yaml   # własny scenariusz
+```
+
+### Konfiguracja
+
+Parametry symulacji definiuje plik YAML (domyślnie `config.yaml`). Najważniejsze ustawienia:
+
+| Parametr | Opis |
+|---|---|
+| `seed` | ziarno generatora losowego |
+| `duration` | czas symulacji w minutach (domyślnie 480 = 8h) |
+| `arrival_rate_per_hour` | średnia liczba spraw na godzinę |
+| `burst_start` / `burst_end` | okno szczytu operacyjnego (`null` = wyłączone) |
+| `burst_multiplier` | mnożnik napływu w szczycie |
+| `monte_carlo_runs` | liczba przebiegów cold-start MC |
+| `warm_monte_carlo_runs` | liczba przebiegów warm-start MC |
+| `fleet_config` | plik z definicją agentów i topologii |
 
 ---
 
