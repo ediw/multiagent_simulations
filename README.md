@@ -277,6 +277,8 @@ pip install -r requirements.txt
 
 ### Pełna symulacja z wizualizacjami
 
+![Wynik symulacji](docs/images/output-screen.png "Wynik symulacji")
+
 Uruchamia single run, cold-start MC i warm-start MC, a następnie generuje interaktywne wykresy HTML w katalogu `output/`:
 
 ```bash
