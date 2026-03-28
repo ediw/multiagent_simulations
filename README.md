@@ -1,6 +1,6 @@
 # Symulacja sieci agentów *(Multi-Agent Simulation)*
 
-Symulacja służy do badania, jak sieć agentów organizuje przetwarzanie informacji w procesie biznesowym. Jako przykład wybrałem proces klasyfikacji wiadomości email i ekstrakcji danych z załączników na przestrzeni jednego dnia operacyjnego.
+Symulacja służy do badania organizowania przetwarzania informacji przez sieć agentów w procesie biznesowym. Jako przykład wybrałem proces klasyfikacji wiadomości email i ekstrakcji danych z załączników na przestrzeni jednego dnia operacyjnego.
 
 ![Sieć agentów](docs/images/network.png "Sieć agentów")
 
