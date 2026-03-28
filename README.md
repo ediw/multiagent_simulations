@@ -90,9 +90,9 @@ Model reprezentuje uproszczony, lecz realistyczny biznesowy proces:
 
 ---
 
-## Co oznacza emergencja w tym projekcie
+## Co oznacza emergencja w symulacji?
 
-Emergencja w niniejszej symulacji oznacza, że wzorce pracy sieci:
+Emergencja w symulacji oznacza, że wzorce pracy sieci:
 
 - nie są zapisane w jednej regule,
 - nie są planowane centralnie,
@@ -110,7 +110,7 @@ Przykłady:
 
 ---
 
-## Dlaczego pojawia się ANT
+## Dlaczego w symulacji pojawia się ANT?
 
 Projekt jest inspirowany Actor-Network Theory (ANT), ale nie jest formalną implementacją tej teorii.
 
@@ -130,7 +130,7 @@ Dzięki temu projekt można wykorzystać nie tylko jako symulację przepływu (w
 
 ---
 
-## Dlaczego pojawia się „termodynamika”
+## Dlaczego w symulacji pojawia się „termodynamika”?
 
 Projekt używa wskaźników inspirowanych fizyką statystyczną:
 
@@ -156,7 +156,7 @@ Celem tych wielkości jest wykrywanie momentów, w których system:
 
 ---
 
-## Dlaczego pojawia się tu Monte Carlo (MC)
+## Dlaczego używamy symulacji Monte Carlo (MC)?
 
 Pojedynczy przebieg symulacji pokazuje, **jak może wyglądać jeden dzień operacyjny**, ale nie wystarcza to do oceny, czy obserwowany wzorzec jest:
 
